@@ -1,0 +1,72 @@
+{
+  "name": "@sableclient/matrixrtc",
+  "version": "0.1.0",
+  "description": "Engine-agnostic MatrixRTC call orchestration: MSC4143 session protocol, media key distribution and LiveKit key management, with no UI and no app state",
+  "license": "AGPL-3.0-only",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./*": {
+      "types": "./dist/*.d.ts",
+      "import": "./dist/*.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "oxlint .",
+    "fmt": "oxfmt .",
+    "fmt:check": "oxfmt --check ."
+  },
+  "peerDependencies": {
+    "livekit-client": "^2.21.0",
+    "matrix-js-sdk": "^42.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.2",
+    "@vitest/coverage-v8": "^4.1.10",
+    "jsdom": "^30.0.1",
+    "livekit-client": "2.21.0",
+    "matrix-js-sdk": "42.0.0",
+    "oxfmt": "^0.57.0",
+    "oxlint": "^1.72.0",
+    "oxlint-tsgolint": "^0.24.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.9"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "matrix",
+    "matrixrtc",
+    "msc4143",
+    "livekit",
+    "webrtc",
+    "voip",
+    "e2ee"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SableClient/matrix-rtc.git"
+  },
+  "bugs": {
+    "url": "https://github.com/SableClient/matrix-rtc/issues"
+  },
+  "homepage": "https://github.com/SableClient/matrix-rtc#readme",
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "packageManager": "pnpm@10.32.1+sha512.a706938f0e89ac1456b6563eab4edf1d1faf3368d1191fc5c59790e96dc918e4456ab2e67d613de1043d2e8c81f87303e6b40d4ffeca9df15ef1ad567348f2be"
+}
