@@ -17,3 +17,12 @@ Initial extraction from Sable.
 - Call-start capability and incoming-call blocker evaluation.
 - RTC notification and decline parsing, call intents, and signalling decryption.
 - An injectable log sink so the host owns diagnostics.
+
+### Added (phase 2)
+
+- Session join/leave orchestration (`callSession`, `matrixRtcCallLifecycle`),
+  LiveKit token provisioning and the web engine controller
+  (`livekitJsController`).
+- MSC4143 `rtc_foci` autodiscovery parsing (`rtcFoci`).
+- `CallOwnership`: the one-call-at-a-time lease, injected instead of a module
+  singleton, with `createCallOwnership()` as a default implementation.

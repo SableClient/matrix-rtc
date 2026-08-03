@@ -1,9 +1,15 @@
 export * from './callTransport.js';
+export * from './callOwnership.js';
+export * from './rtcFoci.js';
 
 export * from './callProtocol.js';
 export * from './callKeyPipeline.js';
 export * from './livekitCallIdentity.js';
 export * from './callMembershipState.js';
+export * from './callSession.js';
+export * from './livekitProvisioning.js';
+export * from './matrixRtcCallLifecycle.js';
+export * from './livekitJsController.js';
 export * from './livekitMatrixKeyProvider.js';
 
 export * from './callStartCapabilities.js';

@@ -56,6 +56,21 @@ graph narrow (a service worker cannot pull in the runtime Matrix SDK):
 import { normalizeCallIntent } from '@sableclient/matrixrtc/callIntent';
 ```
 
+## Host dependencies
+
+Four things the host owns are injected rather than reached for, so nothing here
+depends on a singleton:
+
+| dependency | where |
+| --- | --- |
+| `request: typeof fetch` | `provisionLivekitToken`, threaded through the join |
+| `acquireOwner` | `createLivekitJsController`, the one-call-at-a-time lease |
+| `subscribeToCallRoom` | the join, for eager roster hydration |
+| `setLogSink` | diagnostics |
+
+`createCallOwnership()` ships a single-slot lease for hosts without a policy of
+their own.
+
 ## Diagnostics
 
 Nothing is logged until a host installs a sink, so the package never owns a
@@ -89,11 +104,9 @@ test: { server: { deps: { inline: [/matrix-js-sdk\/lib\//] } } },
 ## What is deliberately not here
 
 - Anything that renders. Layout, controls and device pickers stay in the host.
-- App state. No jotai, no React, no store — the lint config forbids them.
-- Session join/leave orchestration, LiveKit token provisioning and the engine
-  controllers. Those still reach for host singletons (a call-ownership lease, a
-  sliding-sync manager, the host's `fetch`) and move here once those are
-  inverted into injected dependencies.
+- App state. No jotai, no React, no store, and the lint config forbids them.
+- The Tauri/native transport and its controller, which speak to a platform
+  plugin over IPC.
 
 ## Scripts
 
