@@ -26,3 +26,4 @@ Initial extraction from Sable.
 - MSC4143 `rtc_foci` autodiscovery parsing (`rtcFoci`).
 - `CallOwnership`: the one-call-at-a-time lease, injected instead of a module
   singleton, with `createCallOwnership()` as a default implementation.
+- Tests for the lease, the log sink and `rtc_foci` filtering.
