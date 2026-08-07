@@ -7,7 +7,11 @@ import { buildProvisioningRequest, type CallProvisioningRequest } from './callPr
 export type LivekitProvisioningOptions = {
   mx: Pick<MatrixClient, 'getOpenIdToken'>;
   roomId: string;
+  userId: string;
   deviceId: string;
+  memberId: string;
+  slotId: string;
+  stickyMemberships: boolean;
   serviceUrl: string;
   /** Injected: a Tauri or Electron host routes through its own transport. */
   request: typeof fetch;
@@ -76,7 +80,11 @@ const requestLivekitToken = async (
 export const provisionLivekitToken = async ({
   mx,
   roomId,
+  userId,
   deviceId,
+  memberId,
+  slotId,
+  stickyMemberships,
   serviceUrl,
   request,
 }: LivekitProvisioningOptions): Promise<LivekitProvisioningResult> => {
@@ -88,15 +96,18 @@ export const provisionLivekitToken = async ({
   }
 
   const endpoint = trimTrailingSlash(serviceUrl);
-  const provisioningRequest = buildProvisioningRequest({
+  const inputs = {
     serviceUrl: endpoint,
     roomId,
+    userId,
     deviceId,
+    memberId,
+    slotId,
     openidToken,
-  });
+  };
 
   try {
-    return await requestLivekitToken(provisioningRequest, request);
+    return await requestLivekitToken(buildProvisioningRequest(inputs, stickyMemberships), request);
   } catch (error) {
     // Report which SFU refused us and with what status, since that separates a
     // dead transport advertised by another participant from a rejected token.

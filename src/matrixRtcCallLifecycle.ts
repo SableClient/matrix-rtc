@@ -13,7 +13,11 @@ import {
   isLivekitTransportConfig,
   provisionLivekitToken,
 } from './livekitProvisioning.js';
-import { advertiseCallTransport, callMemberId } from './callProtocol.js';
+import {
+  advertiseCallTransport,
+  callMemberId,
+  supportsStickyMemberships,
+} from './callProtocol.js';
 import type { LivekitProvisioningResult } from './livekitProvisioning.js';
 import { createDebugLogger } from './logger.js';
 
@@ -239,6 +243,8 @@ export const joinAndProvisionMatrixRTC = async ({
   await hydrateCallRoster(room);
   if (isCancelled?.()) throw new Error('MatrixRTC setup cancelled');
 
+  const stickyMemberships = await supportsStickyMemberships(mx);
+
   const membershipWait = waitForOwnMembership(session, identity.userId, identity.deviceId);
   onMembershipWait?.(membershipWait.cancel);
   onStage?.('joining-matrix');
@@ -247,6 +253,7 @@ export const joinAndProvisionMatrixRTC = async ({
     const joinConfig: JoinSessionConfig = {
       callIntent,
       membershipEventExpiryMs,
+      ...(stickyMemberships ? { unstableSendStickyEvents: true } : {}),
       ...(notificationType ? { notificationType } : {}),
       ...(manageMediaKeys ? { manageMediaKeys: true } : {}),
     };
@@ -287,7 +294,11 @@ export const joinAndProvisionMatrixRTC = async ({
   const provisioned = await provisionToken({
     mx,
     roomId: room.roomId,
+    userId: identity.userId,
     deviceId,
+    memberId: identity.memberId,
+    slotId,
+    stickyMemberships,
     serviceUrl: callTransport.livekit_service_url,
     request,
   });

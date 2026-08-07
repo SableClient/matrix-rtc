@@ -88,6 +88,7 @@ describe('provisionLivekitToken', () => {
     mx: client(),
     roomId: '!room:example.org',
     slotId: 'm.call#real-slot',
+    stickyMemberships: false,
     deviceId: 'DEVICE',
     serviceUrl: 'https://sfu.example///',
     memberId: 'member-id',
