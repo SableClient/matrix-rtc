@@ -176,6 +176,49 @@ describe('joinAndProvisionMatrixRTC', () => {
     expect(joinConfig.unstableSendStickyEvents).toBeUndefined();
   });
 
+  it('leaves the SFU election to the oldest membership on the legacy path', async () => {
+    const session = makeSession();
+    const opts = callOpts({ session });
+    const promise = joinAndProvisionMatrixRTC(opts);
+
+    await vi.waitFor(() => expect(session.joinRTCSession).toHaveBeenCalled());
+    session.memberships = [
+      { userId: '@alice:example.org', deviceId: 'ALICEDEVICE' },
+    ] as CallMembership[];
+    session.handlers.get(MatrixRTCSessionEvent.MembershipsChanged)!([], session.memberships);
+    await promise;
+
+    const [, , multiSfuFocus] = (session.joinRTCSession as Mock).mock.calls[0] as unknown[];
+    expect(multiSfuFocus).toBeUndefined();
+  });
+
+  it('declares its own transport when the server supports sticky memberships', async () => {
+    const session = makeSession();
+    const mx = makeClient({
+      doesServerSupportUnstableFeature: vi
+        .fn<() => Promise<boolean>>()
+        .mockResolvedValue(true) as unknown as MatrixClient['doesServerSupportUnstableFeature'],
+    });
+    const opts = callOpts({ session, mx });
+    const promise = joinAndProvisionMatrixRTC(opts);
+
+    await vi.waitFor(() => expect(session.joinRTCSession).toHaveBeenCalled());
+    session.memberships = [
+      { userId: '@alice:example.org', deviceId: 'ALICEDEVICE' },
+    ] as CallMembership[];
+    session.handlers.get(MatrixRTCSessionEvent.MembershipsChanged)!([], session.memberships);
+    await promise;
+
+    const [, , multiSfuFocus, joinConfig] = (session.joinRTCSession as Mock).mock.calls[0] as [
+      unknown,
+      unknown[],
+      unknown,
+      JoinSessionConfig,
+    ];
+    expect(joinConfig.unstableSendStickyEvents).toBe(true);
+    expect(multiSfuFocus).toEqual(makeTransport());
+  });
+
   it('provisions against the oldest membership transport, not our own preference', async () => {
     const session = makeSession();
     const oldestTransport = { type: 'livekit' as const, livekit_service_url: 'https://oldest.sfu' };

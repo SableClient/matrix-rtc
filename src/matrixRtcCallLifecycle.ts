@@ -258,7 +258,12 @@ export const joinAndProvisionMatrixRTC = async ({
       ...(manageMediaKeys ? { manageMediaKeys: true } : {}),
     };
     onJoinStarted?.();
-    session.joinRTCSession(identity, [advertisedTransport], undefined, joinConfig);
+    session.joinRTCSession(
+      identity,
+      [advertisedTransport],
+      stickyMemberships ? preferredTransport : undefined,
+      joinConfig
+    );
     await membershipWait.promise;
     debugLog.info(
       'call',
