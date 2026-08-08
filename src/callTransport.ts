@@ -34,6 +34,7 @@ export type CallParticipant = {
   identity: string;
   camera?: CallTrack;
   screenShare?: CallTrack;
+  microphone?: CallTrack;
   connectionQuality?: CallConnectionQuality;
 };
 
