@@ -46,6 +46,7 @@ export type CallTransportState = {
   participants: CallParticipant[];
   microphoneEnabled: boolean;
   cameraEnabled: boolean;
+  screenShareEnabled: boolean;
   /** User-facing copy, set only when the media stack failed. */
   error?: string;
 };
@@ -79,6 +80,7 @@ export type CallTransportCapabilities = {
     select: (routeId: string) => Promise<void>;
   };
   pictureInPicture?: { setEnabled: (enabled: boolean) => Promise<void> };
+  screenShare?: { setEnabled: (enabled: boolean) => Promise<void> };
 };
 
 export type CallTransport = {
